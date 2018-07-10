@@ -1,0 +1,73 @@
+Shiny Presentation
+========================================================
+author: Donato Scarano  
+date: 10/07/2018
+autosize: true
+
+
+
+========================================================
+type:section
+
+
+## Introduction
+
+## - This application use the mtcars dataset to interactively display the mpg (Miles per Gallon) variable frequency.
+
+## - A slidebar allow to select the value among those available in the dataset.
+
+## - An interactive histogram displays frequency and mean
+
+## - The code is divided in 2 files one for the UI(User Interface) part and the second for the Server side.
+
+
+User Interface  UI Code
+========================================================
+```
+shinyUI(pageWithSidebar(
+  headerPanel("Miles Per Gallon Frequency"),
+  sidebarPanel(
+    sliderInput('mpg', 'Miles Per Gallon',value = 10, min = 10, max = 35, step = 5,)
+  ),
+  mainPanel(
+    plotOutput('newHist')
+    
+  )
+))
+```
+Server Code
+========================================================
+
+```
+data(mtcars)
+
+shinyServer(
+  function(input, output) {
+    output$newHist <- renderPlot({
+      hist(mtcars$mpg, xlab='Miles Per Gallon', col='blue',main='Histogram')
+      mpg <- input$mpg
+      lines(c(mpg, mpg), c(0, 200),col="red",lwd=5)
+      mse <- mean((mtcars$mpg - mpg)^2)
+      text(12, 11, paste("mpg = ", mpg))
+      text(12, 10, paste("MSE = ", round(mse, 2)))
+    })
+    
+  }
+)
+```
+
+
+Summary of the dataset
+========================================================
+
+```{r}
+summary(mtcars)
+```
+Plot
+========================================================
+Below is an example of plot obtained running the application.
+
+```{r}
+
+hist(mtcars$mpg, xlab='Miles Per Gallon', col='blue',main='Histogram')
+```
